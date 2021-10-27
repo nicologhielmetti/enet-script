@@ -28,6 +28,7 @@ while getopts ":r:f:c:q:p:i:o:" opt; do
   esac
 done
 
+pwd
 conda activate hls4ml-testing
 pip install git+https://github.com/nicologhielmetti/hls4ml.git@fifo_depth_opt#egg=hls4ml[profiling]
 source /opt/Xilinx/Vivado/2019.2/settings64.sh
