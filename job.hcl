@@ -13,7 +13,7 @@ job "scan_f{n_filters}_clk{clock_period}_rf{reuse_factor}_q{quantization}_{preci
       config {{
         image = "gitlab-registry.cern.ch/fastmachinelearning/hls4ml-testing:0.3.vivado"
         privileged = true
-        args = ["/bin/bash", "/local/enet-scan/explore-enet.sh {reuse_factor} {n_filters} {clock_period} {quantization} {precision} {input_data} {output_predictions} > /local/output.txt"]
+        args = ["/bin/bash", "local/enet-scan/run_enet_explore.sh {reuse_factor} {n_filters} {clock_period} {quantization} {precision} {input_data} {output_predictions} > local/output.txt"]
       }}
       resources {{
         memory = 8000
