@@ -1,0 +1,9 @@
+explore:
+  reuse_factor: [10, 20, 50, 100]
+  n_filters: [4, 8, 16]
+  clock_period: [5, 10]
+  quantization: [4, 8]
+  precision: ['ap_fixed<8,4>', 'ap_fixed<16,6>']
+simulation:
+  input_data: 'X_test.npy'
+  output_predictions: 'y_test.npy'
