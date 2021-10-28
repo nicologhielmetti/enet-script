@@ -1,9 +1,5 @@
 import hls4ml
-import tensorflow as tf
-import tensorflow_datasets as tfds
-import yaml
 from keras.models import load_model
-import numpy as np
 
 from hls4ml.model.profiling import optimize_fifos_depth
 import argparse
