@@ -1,5 +1,5 @@
 import hls4ml
-from keras.models import load_model
+from tensorflow.keras.models import load_model
 
 from hls4ml.model.profiling import optimize_fifos_depth
 import argparse
