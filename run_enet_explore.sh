@@ -33,4 +33,4 @@ conda activate hls4ml-testing
 pip install git+https://github.com/nicologhielmetti/hls4ml.git@fifo_depth_opt#egg=hls4ml[profiling]
 pip install keras
 source /opt/Xilinx/Vivado/2019.2/settings64.sh
-python explore-enet.py --reuse_factor $reuse_factor --n_filters $n_filters --clock_period $clock_period --quantization $quantization --precision $precision --input_data $input_data --output_predictions $output_predictions
+python explore-enet.py -r $reuse_factor -f $n_filters -c $clock_period -q $quantization -p $precision -i $input_data -o $output_predictions
