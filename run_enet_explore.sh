@@ -1,6 +1,6 @@
 #!/bin/bash
 
-while getopts ":r:f:c:q:p:i:o:" opt; do
+while getopts "r:f:c:q:p:i:o:" opt; do
   case $opt in
     r) reuse_factor="$OPTARG"
     ;;
@@ -30,7 +30,7 @@ done
 
 source /home/hls4ml/.bashrc
 conda activate hls4ml-testing
-pip install git+https://github.com/nicologhielmetti/hls4ml.git@fifo_depth_opt#egg=hls4ml[profiling]
+pip install git+https://github.com/nicologhielmetti/hls4ml.git@enet#egg=hls4ml[profiling]
 pip install keras
 source /opt/Xilinx/Vivado/2019.2/settings64.sh
-python explore-enet.py -r $reuse_factor -f $n_filters -c $clock_period -q $quantization -p $precision -i $input_data -o $output_predictions
+python explore-enet.py -r "$reuse_factor" -f "$n_filters" -c "$clock_period" -q "$quantization" -p "$precision" -i "$input_data" -o "$output_predictions"

@@ -1,8 +1,9 @@
 import hls4ml
-from tensorflow.keras.models import load_model
 
 from hls4ml.model.profiling import optimize_fifos_depth
 import argparse
+
+from qkeras.utils import load_qmodel
 
 classes = {
     7: 1,  # road
@@ -19,19 +20,20 @@ BOX_FRAC = 0.8
 
 
 def get_model(n_filters=8, quantization=4):
-    return load_model(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5')
+    return load_qmodel(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5', compile=False)
 
 
-def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, default_precision='ap_fixed<8,4>',
+def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                             input_data=None,
                             output_predictions=None):
     keras_model = get_model(n_filters, quantization)
 
     hls_config = {
         'Model': {
-            'Precision': default_precision,
+            'Precision': precision,
             'ReuseFactor': reuse_factor,
-            'Strategy': 'Resource'
+            'Strategy': 'Resource',
+            'FIFO_opt': 1,
         },
         'LayerName': {
             'conv2d_1': {
@@ -39,7 +41,7 @@ def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization,
             }
         }
     }
-    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, default_precision)
+    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision)
     hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
                                      backend='VivadoAccelerator',
                                      board='zcu102', hls_config=hls_config, input_data_tb=input_data,
@@ -51,13 +53,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--reuse_factor', type=int, help='Reuse factor', required=True)
 parser.add_argument('-f', '--n_filters', type=int, help='Filter size', required=True)
 parser.add_argument('-c', '--clock_period', type=int, help='HLS clock latency in ns', required=True)
-parser.add_argument('-q', '--quantization', type=int, help='Uniform quatization of the model (i.e.: 4, 8)',
+parser.add_argument('-q', '--quantization', type=int, help='Uniform quantization of the model (i.e.: 4, 8)',
                     required=True)
 parser.add_argument('-p', '--precision', type=str, help='Precision used by default in the hls model', nargs='?',
                     default='ap_fixed<8,4>')
 parser.add_argument('-i', '--input_data', type=str, help='Input .npy file', nargs='?', default=None)
 parser.add_argument('-o', '--output_predictions', type=str, help='Output .npy file', nargs='?', default=None)
-args = vars(parser.parse_args())
+args = parser.parse_args()
 
 get_model_and_build_hls(n_filters=args.n_filters, clock_period=args.clock_period,
                         reuse_factor=args.reuse_factor, quantization=args.quantization, precision=args.precision,
