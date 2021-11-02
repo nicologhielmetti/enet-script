@@ -10,7 +10,7 @@ job "scan_f{n_filters}_clk{clock_period}_rf{reuse_factor}_q{quantization}_{preci
         image = "gitlab-registry.cern.ch/fastmachinelearning/hls4ml-testing:0.3.vivado"
         privileged = true
         network_mode = "host"
-        args = ["/bin/bash", "-c", "git clone https://github.com/nicologhielmetti/enet-script && cd enet-script && chmod +x run_enet_explore.sh && ./run_enet_explore.sh -r{reuse_factor} -f{n_filters} -c{clock_period} -q{quantization} -p'{precision}' -i{input_data} -o{output_predictions} > output.txt"]
+        args = ["/bin/bash", "-c", "git clone https://github.com/nicologhielmetti/enet-script && cd enet-script && chmod +x run_enet_explore.sh && ./run_enet_explore.sh -r{reuse_factor} -f{n_filters} -c{clock_period} -q{quantization} -p'{precision}' -i{input_data} -o{output_predictions}"]
       }}
       resources {{
         memory = 8000

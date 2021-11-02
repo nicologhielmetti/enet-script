@@ -42,7 +42,7 @@ def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization,
         }
     }
     out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision)\
-        .replace(',', '-')
+        .replace(',', '-').replace('<', '_').replace('>', '_')
     hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
                                      backend='VivadoAccelerator',
                                      board='zcu102', hls_config=hls_config, input_data_tb=input_data,
