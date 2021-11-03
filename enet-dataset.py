@@ -80,4 +80,5 @@ def create_cityscapes_ds(split, batch_size, n_elem):
 def read_dataset(path):
     return np.load(path)
 
-create_cityscapes_ds('test', 1, 2)
+
+create_cityscapes_ds('test', 1, 10)
