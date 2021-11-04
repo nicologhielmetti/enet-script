@@ -1,3 +1,5 @@
+import tarfile
+
 import hls4ml
 
 from hls4ml.model.profiling import optimize_fifos_depth
@@ -20,7 +22,21 @@ BOX_FRAC = 0.8
 
 
 def get_model(n_filters=8, quantization=4):
-    return load_qmodel(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5', compile=False)
+    return load_qmodel(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5',
+                       compile=False)
+
+
+def pack_results(dir):
+    EXCLUDE_LIST = ['.autopilot', 'myproject_axi.wdb', 'xsim.dir']
+
+    def exclude_function(tarinfo):
+        if any(elem in tarinfo.name for elem in EXCLUDE_LIST):
+            return None
+        else:
+            return tarinfo
+
+    with tarfile.open('results/' + dir + '.tar.gz', mode='w:gz') as archive:
+        archive.add(dir + '_FIFO_OPT', recursive=True, filter=exclude_function)
 
 
 def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
@@ -41,13 +57,14 @@ def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization,
             }
         }
     }
-    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision)\
+    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision) \
         .replace(',', '-').replace('<', '_').replace('>', '_')
     hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
                                      backend='VivadoAccelerator',
                                      board='zcu102', hls_config=hls_config, input_data_tb=input_data,
                                      output_data_tb=output_predictions)
     hls4ml.templates.VivadoAcceleratorBackend.make_bitfile(hls_model)
+    pack_results(out_dir)
 
 
 parser = argparse.ArgumentParser()
