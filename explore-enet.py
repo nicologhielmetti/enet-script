@@ -39,7 +39,7 @@ def pack_results(dir):
         else:
             return tarinfo
 
-    with tarfile.open('results/' + dir + '.tar.gz', mode='w:gz') as archive:
+    with tarfile.open('results_' + dir + '.tar.gz', mode='w:gz') as archive:
         archive.add(dir + '_FIFO_OPT', recursive=True, filter=exclude_function)
 
 
