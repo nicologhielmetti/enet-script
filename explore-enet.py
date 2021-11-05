@@ -1,11 +1,15 @@
 import tarfile
 
 import hls4ml
+import tensorflow
 
 from hls4ml.model.profiling import optimize_fifos_depth
 import argparse
 
 from qkeras.utils import load_qmodel
+from tensorflow.keras.layers import *
+from tensorflow.keras.models import Sequential
+import random as rnd
 
 classes = {
     7: 1,  # road
@@ -38,6 +42,68 @@ def pack_results(dir):
     with tarfile.open('results/' + dir + '.tar.gz', mode='w:gz') as archive:
         archive.add(dir + '_FIFO_OPT', recursive=True, filter=exclude_function)
 
+
+def get_dummy_model():
+    rnd.seed(42)
+
+    height = 10
+    width = 10
+    chan = 3
+
+    input_shape = (height, width, chan)
+    num_classes = 5
+
+    model = Sequential()
+    model.add(
+        Conv2D(4, kernel_size=(3, 3), padding='same', strides=(1, 1), activation='linear', input_shape=input_shape,
+               bias_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96),
+               kernel_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96)))
+    model.add(
+        BatchNormalization(
+            beta_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96),
+            gamma_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96),
+            moving_mean_initializer=tensorflow.keras.initializers.RandomUniform(minval=0, maxval=0.8,
+                                                                                seed=96),
+            moving_variance_initializer=tensorflow.keras.initializers.RandomUniform(minval=0, maxval=0.8,
+                                                                                    seed=None)))
+    model.add(ReLU(name='relu_1'))
+    model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2), name='mp2d_1'))
+    model.add(Flatten())
+    model.add(Dense(num_classes, activation='softmax',
+                    bias_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96),
+                    kernel_initializer=tensorflow.keras.initializers.RandomUniform(minval=-0.8, maxval=0.8, seed=96)))
+    return model
+
+
+def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
+                                  input_data=None, output_predictions=None):
+    
+    keras_model = get_dummy_model()
+    
+    hls_config = {
+        'Model': {
+            'Precision': precision,
+            'ReuseFactor': reuse_factor,
+            'Strategy': 'Resource',
+            'FIFO_opt': 1,
+        },
+        'LayerName': {
+            'dense_softmax': {
+                'Strategy': 'Stable'
+            }
+        }
+    }
+    
+    out_dir = 'hls_dummy_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision) \
+        .replace(',', '-').replace('<', '_').replace('>', '_')
+
+    hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
+                                     backend='VivadoAccelerator',
+                                     board='zcu102', hls_config=hls_config, input_data_tb=input_data,
+                                     output_data_tb=output_predictions)
+    hls4ml.templates.VivadoAcceleratorBackend.make_bitfile(hls_model)
+    pack_results(out_dir)
+    
 
 def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                             input_data=None,
@@ -79,6 +145,6 @@ parser.add_argument('-i', '--input_data', type=str, help='Input .npy file', narg
 parser.add_argument('-o', '--output_predictions', type=str, help='Output .npy file', nargs='?', default=None)
 args = parser.parse_args()
 
-get_model_and_build_hls(n_filters=args.n_filters, clock_period=args.clock_period,
+get_dummy_model_and_build_hls(n_filters=args.n_filters, clock_period=args.clock_period,
                         reuse_factor=args.reuse_factor, quantization=args.quantization, precision=args.precision,
                         input_data=args.input_data, output_predictions=args.output_predictions)
