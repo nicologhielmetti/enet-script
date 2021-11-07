@@ -28,8 +28,9 @@ while getopts "r:f:c:q:p:i:o:" opt; do
   esac
 done
 
-source /home/hls4ml/.bashrc
-conda activate hls4ml-testing
+# source /home/hls4ml/.bashrc
+# conda activate hls4ml-testing
+pip uninstall hls4ml
 pip install git+https://github.com/nicologhielmetti/hls4ml.git@enet#egg=hls4ml[profiling]
 pip install keras
 source /opt/Xilinx/Vivado/2019.2/settings64.sh
