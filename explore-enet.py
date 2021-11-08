@@ -145,6 +145,6 @@ parser.add_argument('-i', '--input_data', type=str, help='Input .npy file', narg
 parser.add_argument('-o', '--output_predictions', type=str, help='Output .npy file', nargs='?', default=None)
 args = parser.parse_args()
 
-get_dummy_model_and_build_hls(n_filters=args.n_filters, clock_period=args.clock_period,
+get_model_and_build_hls(n_filters=args.n_filters, clock_period=args.clock_period,
                         reuse_factor=args.reuse_factor, quantization=args.quantization, precision=args.precision,
                         input_data=args.input_data, output_predictions=args.output_predictions)
