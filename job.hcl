@@ -13,7 +13,7 @@ job "scan_f{n_filters}_clk{clock_period}_rf{reuse_factor}_q{quantization}_{preci
         args = ["/bin/bash", "-c", "cd ../../local && git clone https://github.com/nicologhielmetti/enet-script && cd enet-script && chmod +x run_enet_explore.sh && ./run_enet_explore.sh -r{reuse_factor} -f{n_filters} -c{clock_period} -q{quantization} -p'{precision}' -i{input_data} -o{output_predictions}"]
       }}
       resources {{
-        memory = 32000
+        memory = 50000
       }}
     }}
   }}
