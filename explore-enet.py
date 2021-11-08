@@ -26,8 +26,7 @@ BOX_FRAC = 0.8
 
 
 def get_model(n_filters=8, quantization=4):
-    return load_qmodel(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5',
-                       compile=False)
+    return load_qmodel(f'models_h5/hom{quantization}_32_{n_filters}_{n_filters}_{n_filters}_{n_filters}_{n_filters}.h5', compile=False)
 
 
 def pack_results(dir):
