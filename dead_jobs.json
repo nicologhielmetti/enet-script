@@ -1,6 +1,1 @@
-[
-    "scan_f4_clk10_rf10_q4_ap_fixed<8,4>",
-    "scan_f4_clk10_rf20_q4_ap_fixed<16,6>",
-    "scan_f4_clk10_rf20_q4_ap_fixed<8,4>",
-    "scan_f4_clk10_rf20_q8_ap_fixed<16,6>"
-]
+[]

@@ -6,7 +6,7 @@ def save_results(dead_job_id):
     dead_job_id_tarname = dead_job_id.replace(',', '-').replace('<', '_').replace('>', '_')
     os.system('nomad alloc fs -job \'{}\' \'synth_scan/local/enet-script/{}.tar.gz\' > '
               '/eos/user/n/nghielme/enet-results/{}.tar.gz '
-              .format(dead_job_id, dead_job_id_tarname, dead_job_id_tarname))
+              .format(dead_job_id, dead_job_id_tarname, dead_job_id_tarname.replace('scan', 'results_hls')))
 
 
 os.system('nomad job status | grep \'dead\' | grep -v \'dead (stopped)\' > dead_jobs_new.txt')
