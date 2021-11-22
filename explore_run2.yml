@@ -1,0 +1,6 @@
+explore:
+  reuse_factor: [2, 4, 6]
+  clock_period: [5, 7, 10]
+simulation:
+  input_data: 'X_test.npy'
+  output_predictions: 'y_test.npy'
