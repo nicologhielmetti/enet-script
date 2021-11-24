@@ -1,4 +1,4 @@
-job "scan_f4_clk10_rf4_q4_ap_fixed<8,4>" {
+job "scan_f8_clk10_rf6_q8_ap_fixed<16,6>" {
   datacenters = ["cerndc-olab"]
   type = "batch"
   group "hls4ml-scan" {
@@ -10,7 +10,7 @@ job "scan_f4_clk10_rf4_q4_ap_fixed<8,4>" {
         image = "gitlab-registry.cern.ch/fastmachinelearning/hls4ml-testing:0.3.vivado"
         privileged = true
         network_mode = "host"
-        args = ["/bin/bash", "-c", "cd ../../local && git clone https://github.com/nicologhielmetti/enet-script && cd enet-script && chmod +x run_enet_explore.sh && ./run_enet_explore.sh -r4 -f4 -c10 -q4 -p'ap_fixed<8,4>' -iX_test.npy -oy_test.npy"]
+        args = ["/bin/bash", "-c", "cd ../../local && git clone https://github.com/nicologhielmetti/enet-script && cd enet-script && chmod +x run_enet_explore.sh && ./run_enet_explore.sh -r6 -f8 -c10 -q8 -p'ap_fixed<16,6>' -iX_test.npy -oy_test.npy"]
       }
       resources {
         memory = 32000

@@ -5,7 +5,7 @@ import json
 def save_results(dead_job_id):
     dead_job_id_tarname = dead_job_id.replace(',', '-').replace('<', '_').replace('>', '_').replace('scan', 'results_hls')
     os.system('nomad alloc fs -job \'{}\' \'synth_scan/local/enet-script/{}.tar.gz\' > '
-              '/eos/user/n/nghielme/enet-results/{}.tar.gz '
+              '/eos/user/n/nghielme/enet-results_run2/{}.tar.gz '
               .format(dead_job_id, dead_job_id_tarname, dead_job_id_tarname))
 
 

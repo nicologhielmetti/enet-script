@@ -1,11 +1,8 @@
 import os
-
-import pandas
 import yaml
 
 # generate combinations
 import itertools
-import pandas as pd
 
 for config_file in os.listdir('explore_run2_scripts'):
     with open('explore_run2_scripts/' + config_file, 'r') as file:

@@ -17,6 +17,6 @@ for c in combinations:
     job = lines.format(reuse_factor=c[0], n_filters=c[1], clock_period=c[2], quantization=c[3], precision=c[4],
                        input_data=config['simulation']['input_data'],
                        output_predictions=config['simulation']['output_predictions'])
-    f = open('jobs/job_f{}_clk{}_rf{}_q{}_{}.hcl'.format(c[1], c[2], c[0], c[3], c[4]), "w")
+    f = open('jobs_run1/job_f{}_clk{}_rf{}_q{}_{}.hcl'.format(c[1], c[2], c[0], c[3], c[4]), "w")
     f.write(job)
     f.close()
