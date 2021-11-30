@@ -1,0 +1,13 @@
+ ,ID,Run,Filters,Clock,ReuseFactor,Model,Quantization,Precision,LUTs%,FFs%,RAM36Bs%,RAM18s%,DSPs%,WNS,MaxLatency
+9,hls_f8_clk10_rf2_q4_ap_fixed_8-4_,run2,8,10,2,"Clock: 10 
+ RF: 2",4,"8,4",NA,NA,NA,NA,NA,NA,1751049
+16,hls_f16_clk10_rf100_q4_ap_fixed_16-6_,run1,16,10,100,"Clock: 10 
+ RF: 100",4,"16,6",NA,NA,NA,NA,NA,NA,18717392
+18,hls_f8_clk10_rf50_q8_ap_fixed_16-6_,run1,8,10,50,"Clock: 10 
+ RF: 50",8,"16,6",NA,NA,NA,NA,NA,NA,9378512
+39,hls_f8_clk7_rf50_q8_ap_fixed_16-6_,run1,8,7,50,"Clock: 7 
+ RF: 50",8,"16,6",NA,NA,NA,NA,NA,NA,9378512
+80,hls_f8_clk5_rf50_q8_ap_fixed_16-6_,run1,8,5,50,"Clock: 5 
+ RF: 50",8,"16,6",NA,NA,NA,NA,NA,NA,9414995
+91,hls_f16_clk10_rf100_q4_ap_fixed_8-4_,run1,16,10,100,"Clock: 10 
+ RF: 100",4,"8,4",NA,NA,NA,NA,NA,NA,18826829
