@@ -6,10 +6,22 @@ import tensorflow
 from hls4ml.model.profiling import optimize_fifos_depth
 import argparse
 
+from hls4ml.utils import config_from_keras_model
 from qkeras.utils import load_qmodel
 from tensorflow.keras.layers import *
 from tensorflow.keras.models import Sequential
 import random as rnd
+
+from clone import CloneOutput
+from optimizers.alpha_type_matching import AlphaTypeMatching
+from optimizers.clone_type_matching import CloneTypeMatching
+from optimizers.conv_type_matching import ConvTypeMatching
+from optimizers.eliminate_linear import EliminateLinearActivation
+from optimizers.eliminate_softmax import EliminateSoftmax
+from optimizers.max_pooling_type_matching import MP2DTypeMatching
+from optimizers.merge_type_matching import MergeTypeMatching
+from optimizers.resize_type_matching import ResizeTypeMatching
+from optimizers.zero_padding_type_matching import ZP2DTypeMatching
 
 classes = {
     7: 1,  # road
@@ -77,9 +89,8 @@ def get_dummy_model():
 
 def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                                   input_data=None, output_predictions=None):
-    
     keras_model = get_dummy_model()
-    
+
     hls_config = {
         'Model': {
             'Precision': precision,
@@ -93,7 +104,7 @@ def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantiz
             }
         }
     }
-    
+
     out_dir = 'hls_dummy_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision) \
         .replace(',', '-').replace('<', '_').replace('>', '_')
 
@@ -103,31 +114,46 @@ def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantiz
                                      output_data_tb=output_predictions)
     hls4ml.templates.VivadoAcceleratorBackend.make_bitfile(hls_model)
     pack_results(out_dir)
-    
+
 
 def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                             input_data=None,
                             output_predictions=None):
-    keras_model = get_model(n_filters, quantization)
+    hls4ml.model.optimizer.OutputRoundingSaturationMode.layers = ['Activation', 'BatchNormalization']
+    hls4ml.model.optimizer.OutputRoundingSaturationMode.rounding_mode = 'AP_RND_CONV'
+    hls4ml.model.optimizer.OutputRoundingSaturationMode.saturation_mode = 'AP_SAT'
 
-    hls_config = {
-        'Model': {
-            'Precision': precision,
-            'ReuseFactor': reuse_factor,
-            'Strategy': 'Resource',
-            'FIFO_opt': 1,
-        },
-        'LayerName': {
-            'conv2d_1': {
-                'ConvImplementation': 'Encoded'
-            }
-        }
+    dedicated_opt = {
+        'eliminate_softmax': EliminateSoftmax,
+        'eliminate_linear_v2': EliminateLinearActivation,
+        'resize_type_matching': ResizeTypeMatching,
+        'clone_output': CloneOutput,
+        'conv_type_matching': ConvTypeMatching,
+        'max_pooling_type_matching': MP2DTypeMatching,
+        'clone_type_matching': CloneTypeMatching,
+        'zero_padding_type_matching': ZP2DTypeMatching,
+        'alpha_type_matching': AlphaTypeMatching,
+        'merge_type_matching': MergeTypeMatching
     }
+    for k, v in dedicated_opt.items():
+        if k not in hls4ml.model.optimizer.get_available_passes():
+            hls4ml.model.optimizer.register_pass(k, v)
+
+    keras_model = get_model(n_filters, quantization)
+    config = config_from_keras_model(keras_model, granularity='name',
+                                     default_precision=precision,
+                                     default_reuse_factor=reuse_factor)
+
+    config['LayerName']['input_1']['Precision'] = {
+        'result': 'ap_ufixed<8,0>'
+    }
+    config['Model']['FIFO_opt'] = True
+
     out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision) \
         .replace(',', '-').replace('<', '_').replace('>', '_')
     hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
                                      backend='VivadoAccelerator',
-                                     board='zcu102', hls_config=hls_config, input_data_tb=input_data,
+                                     board='zcu102', hls_config=config, input_data_tb=input_data,
                                      output_data_tb=output_predictions)
     hls4ml.templates.VivadoAcceleratorBackend.make_bitfile(hls_model)
     pack_results(out_dir)

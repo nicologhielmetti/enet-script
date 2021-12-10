@@ -15,6 +15,7 @@ WIDTH = 152
 HEIGHT = 240
 CROP_FRAC = 0.05
 BOX_FRAC = 0.8
+scaling = 256.0
 
 
 def preproc(data):
@@ -31,8 +32,9 @@ def preproc(data):
                 boxes,
                 box_idx,
                 crop_size=(HEIGHT, WIDTH),
+                method="nearest"
             )
-            / 255.0
+            / scaling
     )
     segmentation = tf.image.crop_and_resize(
         tf.expand_dims(data["segmentation_label"], 0),
@@ -42,6 +44,7 @@ def preproc(data):
         method="nearest",
     )
     image = tf.squeeze(image, 0)
+    # image = tf.cast(image, tf.uint8)
     segmentation = tf.squeeze(segmentation, 0)
     segmentation = tf.cast(segmentation, tf.int32)
     output_segmentation = tf.zeros(segmentation.shape, dtype=segmentation.dtype)
@@ -73,8 +76,8 @@ def create_cityscapes_ds(split, batch_size, n_elem):
     for elem in ds_numpy:
         x_n_elem_ds.append(elem[0][0])
         y_n_elem_ds.append(elem[1][0])
-    np.save('X_' + split + '.npy', x_n_elem_ds)
-    np.save('y_' + split + '.npy', y_n_elem_ds)
+    np.save('X_' + split + '_' + str(int(scaling)) + '.npy', x_n_elem_ds)
+    np.save('y_' + split + '_' + str(int(scaling)) + '.npy', y_n_elem_ds)
 
 
 def read_dataset(path):

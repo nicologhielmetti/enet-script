@@ -66,8 +66,9 @@ def preproc(data):
             boxes,
             box_idx,
             crop_size=(HEIGHT, WIDTH),
+            method="nearest"
         )
-        / 255.0
+        / 256.0
     )
     segmentation = tf.image.crop_and_resize(
         tf.expand_dims(data["segmentation_label"], 0),

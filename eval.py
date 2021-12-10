@@ -1,12 +1,14 @@
 import argparse
+
 import tensorflow as tf
 import numpy as np
 from tqdm import tqdm
 import json
 import qkeras
-import hls4ml
+# import hls4ml
 
 from cityscapes import create_cityscapes_ds, N_CLASSES, WIDTH, HEIGHT
+from model_under_test import get_hls_and_keras_model
 
 CHANNEL_AXIS = -1  # 1
 
@@ -24,9 +26,9 @@ class Evaluator:
 
     def result(self):
         return dict(
-                miou=float(self.iou.result().numpy()),
-                accuracy=float(self.accuracy.result().numpy())
-                )
+            miou=float(self.iou.result().numpy()),
+            accuracy=float(self.accuracy.result().numpy())
+        )
 
 
 def eval_keras_model(model_path):
@@ -41,13 +43,13 @@ def eval_keras_model(model_path):
 
     return evaluator.result()
 
+
 def eval_qkeras_model(model_path):
     model = qkeras.utils.load_qmodel(model_path, compile=False)
     qkeras.utils.model_save_quantized_weights(model)
     data = create_cityscapes_ds("validation", 1)
 
     evaluator = Evaluator(N_CLASSES)
-
     pbar = tqdm(data)
     for image, label in pbar:
         prediction = model(image)
@@ -55,6 +57,7 @@ def eval_qkeras_model(model_path):
         pbar.set_description(f"Accuracy: {res['accuracy']}  mIOU: {res['miou']}")
 
     return evaluator.result()
+
 
 def eval_model(model):
     data = create_cityscapes_ds("validation", 1)
@@ -71,9 +74,8 @@ def eval_model(model):
 
 
 def eval_hls4ml_model(hls4ml_model_path):
-    hls_model = hls4ml.converters.convert_from_config(hls4ml_model_path + '/hls4ml_config.yml')
-    hls_model.compile()
 
+    hls_model, _ = get_hls_and_keras_model(hls4ml_model_path, trace=False)
     data = create_cityscapes_ds("validation", 1)
 
     evaluator = Evaluator(N_CLASSES)
@@ -86,28 +88,12 @@ def eval_hls4ml_model(hls4ml_model_path):
 
     return evaluator.result()
 
-def eval_hls4ml_model_softmax(hls4ml_model_path):
-    hls_model = hls4ml.converters.convert_from_config(hls4ml_model_path + '/hls4ml_config.yml')
-    hls_model.compile()
-
-    data = create_cityscapes_ds("validation", 1)
-
-    evaluator = Evaluator(N_CLASSES)
-
-    pbar = tqdm(data)
-    for image, label in pbar:
-        prediction = hls_model.predict(image.numpy()).reshape(1, HEIGHT, WIDTH, N_CLASSES)
-        res = evaluator.add_sample(prediction, label.numpy())
-        pbar.set_description(f"Accuracy: {res['accuracy']}  mIOU: {res['miou']}")
-
-    return evaluator.result()
 
 def get_evalers():
     return dict(
-            keras=dict(func=eval_keras_model, help="Load keras model"),
-            qkeras=dict(func=eval_qkeras_model, help="Load qkeras model"),
-            hls4ml=dict(func=eval_hls4ml_model, help="Load hls4ml model"),
-            hls4ml_softmax=dict(func=eval_hls4ml_model_softmax, help="Load hls4ml model with keras softmax")
+        keras=dict(func=eval_keras_model, help="Load keras model"),
+        qkeras=dict(func=eval_qkeras_model, help="Load qkeras model"),
+        hls4ml=dict(func=eval_hls4ml_model, help="Load hls4ml model")
     )
 
 
