@@ -1,37 +1,70 @@
+import argparse
+
 import pandas as pd
-from hls4ml.model.profiling import numerical
+from hls4ml.model.profiling import numerical, get_ymodel_keras
 import numpy as np
 import matplotlib.pyplot as plt
 
-from model_under_test import get_hls_and_keras_model
+from model_under_test import get_hls_and_keras_models
 
-block = 0
+parser = argparse.ArgumentParser()
+parser.add_argument('-r', '--reuse_factor', type=int, help='Reuse factor', required=True)
+parser.add_argument('-f', '--n_filters', type=int, help='Filter size', required=True)
+parser.add_argument('-c', '--clock_period', type=int, help='HLS clock latency in ns', required=True)
+parser.add_argument('-q', '--quantization', type=int, help='Uniform quantization of the model (i.e.: 4, 8)',
+                    required=True)
+parser.add_argument('-p', '--precision', type=str, help='Precision used by default in the hls model', nargs='?',
+                    default='ap_fixed<8,4>')
+parser.add_argument('-i', '--input_data', type=str, help='Input .npy file', nargs='?', default=None)
+parser.add_argument('-o', '--output_predictions', type=str, help='Output .npy file', nargs='?', default=None)
+args = parser.parse_args()
+
+block = 38
 print_plots = True
 print_numerical = False
 print_numerical_x = False
 print_precision = True
+create_y_model = False
 
-hls_path = 'results_run1/results_hls_f8_clk7_rf10_q8_ap_fixed_16-6_/hls_f8_clk7_rf10_q8_ap_fixed_16-6__FIFO_OPT'
-keras_path = 'models_h5/hom8_32_8_8_8_8_8.h5'
-X = np.load('X_test_256.npy')
+ymodel_path = 'session_savings/y_model2_hom{}_32_{}_{}_{}_{}_{}.npy'\
+    .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
 
-act_blocks_ymodel = np.load('session_savings/y_model_divided_256.npy', allow_pickle=True).tolist()
+X = np.load(args.input_data)
+
+model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5'\
+        .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
+
+out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan_FIFO_OPT'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
+                                             args.precision).replace(',', '-').replace('<', '_').replace('>', '_')
+
+hls_model, keras_model, config = get_hls_and_keras_models(model_path, args.precision, args.reuse_factor,
+                                                          args.clock_period, out_dir, True)
+
+if create_y_model:
+    ymodel = get_ymodel_keras(keras_model=keras_model, X=X)
+    single_block_ymodel = {}
+    act_blocks_ymodel = []
+    for k, v in ymodel.items():
+        single_block_ymodel[k] = v
+        if 're_lu' in k:
+            act_blocks_ymodel.append(single_block_ymodel)
+            single_block_ymodel = {}
+    else:
+        act_blocks_ymodel.append(single_block_ymodel)
+        single_block_ymodel = {}
+    np.save(ymodel_path, act_blocks_ymodel)
+
+act_blocks_ymodel = np.load(ymodel_path, allow_pickle=True).tolist()
+
 ymodel = {}
 for d in act_blocks_ymodel:
     for k, v in d.items():
         ymodel[k] = v
 
-hls_model, keras_model = get_hls_and_keras_model(keras_path, trace=True)
-
-# ymodel = hls4ml.model.profiling.get_ymodel_keras(keras_model=keras_model, X=X)
-
-
-# np.save('session_savings/y_model_divided_256.npy', act_blocks_ymodel)
 hls_model.write()
 _, ysim = hls_model.trace(X)
 
 act_blocks_ysim = []
-
 single_block_ysim = {}
 for k, v in ysim.items():
     single_block_ysim[k] = v

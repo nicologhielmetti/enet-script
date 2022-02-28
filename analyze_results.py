@@ -74,7 +74,7 @@ df = df[df['LUTs%'] != 'NA']
 
 df['Max Latency [ms]'] = df['MaxLatency'] * 1e-5
 df['10 x WNS [ns]'] = df['WNS'] * 10
-df['Latency Overclock [ms]'] = df['MaxLatency'] * (10-df['WNS']) * 1e-6
+df['Latency Overclock [ms]'] = df['MaxLatency'] * (10 - df['WNS']) * 1e-6
 # df.to_csv('dataframe.csv')
 ap_fixed_16_6_data = df[df['Precision'] == '16,6']
 ap_fixed_8_4_data = df[df['Precision'] == '8,4']
@@ -104,7 +104,6 @@ def print_plot(data, title):
             kwargs['palette'] = palette
 
         sns.pointplot(**kwargs, data=lt100ms)
-
 
     sns.set_theme()
 

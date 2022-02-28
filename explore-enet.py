@@ -13,6 +13,7 @@ from tensorflow.keras.models import Sequential
 import random as rnd
 
 from clone import CloneOutput
+from model_under_test import get_hls_and_keras_models
 from optimizers.alpha_type_matching import AlphaTypeMatching
 from optimizers.clone_type_matching import CloneTypeMatching
 from optimizers.conv_type_matching import ConvTypeMatching
@@ -35,11 +36,6 @@ WIDTH = 152
 HEIGHT = 240
 CROP_FRAC = 0.05
 BOX_FRAC = 0.8
-
-
-def get_model(n_filters=8, quantization=4):
-    return load_qmodel('models_h5/hom{}_32_{}_{}_{}_{}_{}.h5'.format(quantization, n_filters, n_filters, n_filters,
-                                                                     n_filters, n_filters), compile=False)
 
 
 def pack_results(dir):
@@ -119,38 +115,13 @@ def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantiz
 def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                             input_data=None,
                             output_predictions=None):
-    hls4ml.model.optimizer.OutputRoundingSaturationMode.layers = ['Activation', 'BatchNormalization']
-    hls4ml.model.optimizer.OutputRoundingSaturationMode.rounding_mode = 'AP_RND_CONV'
-    hls4ml.model.optimizer.OutputRoundingSaturationMode.saturation_mode = 'AP_SAT'
+    model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5'\
+        .format(quantization, n_filters, n_filters, n_filters, n_filters, n_filters)
+    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan'.format(n_filters, clock_period, reuse_factor, quantization,
+                                                             precision).replace(',', '-').replace('<', '_').replace('>', '_')
+    hls_model, keras_model, config = get_hls_and_keras_models(model_path, precision, reuse_factor, clock_period,
+                                                              out_dir, False)
 
-    dedicated_opt = {
-        'eliminate_softmax': EliminateSoftmax,
-        'eliminate_linear_v2': EliminateLinearActivation,
-        'resize_type_matching': ResizeTypeMatching,
-        'clone_output': CloneOutput,
-        'conv_type_matching': ConvTypeMatching,
-        'max_pooling_type_matching': MP2DTypeMatching,
-        'clone_type_matching': CloneTypeMatching,
-        'zero_padding_type_matching': ZP2DTypeMatching,
-        'alpha_type_matching': AlphaTypeMatching,
-        'merge_type_matching': MergeTypeMatching
-    }
-    for k, v in dedicated_opt.items():
-        if k not in hls4ml.model.optimizer.get_available_passes():
-            hls4ml.model.optimizer.register_pass(k, v)
-
-    keras_model = get_model(n_filters, quantization)
-    config = config_from_keras_model(keras_model, granularity='name',
-                                     default_precision=precision,
-                                     default_reuse_factor=reuse_factor)
-
-    config['LayerName']['input_1']['Precision'] = {
-        'result': 'ap_ufixed<8,0>'
-    }
-    config['Model']['FIFO_opt'] = True
-
-    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}'.format(n_filters, clock_period, reuse_factor, quantization, precision) \
-        .replace(',', '-').replace('<', '_').replace('>', '_')
     hls_model = optimize_fifos_depth(keras_model, output_dir=out_dir, clock_period=clock_period,
                                      backend='VivadoAccelerator',
                                      board='zcu102', hls_config=config, input_data_tb=input_data,

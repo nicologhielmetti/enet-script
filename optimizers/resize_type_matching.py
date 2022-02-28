@@ -5,7 +5,7 @@ class ResizeTypeMatching(OptimizerPass):
     def match(self, node):
         is_match = (node.__class__.__name__ == 'Resize' and
                     (node.get_input_node().__class__.__name__ == 'Activation' or
-                     node.get_input_node().__class__.__name__ == 'BatchNormalization')
+                     node.get_input_node().__class__.__name__ == 'Conv2DBatchnorm')
                     )
         return is_match
 

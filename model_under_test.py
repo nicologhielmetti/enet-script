@@ -15,7 +15,7 @@ from optimizers.resize_type_matching import ResizeTypeMatching
 from optimizers.zero_padding_type_matching import ZP2DTypeMatching
 
 
-def get_hls_and_keras_model(model_path, trace):
+def get_hls_and_keras_models(model_path, default_precision, default_reuse_factor, clock_period, output_dir, trace):
     hls4ml.model.optimizer.OutputRoundingSaturationMode.layers = ['Activation', 'BatchNormalization']
     hls4ml.model.optimizer.OutputRoundingSaturationMode.rounding_mode = 'AP_RND_CONV'
     hls4ml.model.optimizer.OutputRoundingSaturationMode.saturation_mode = 'AP_SAT'
@@ -23,9 +23,9 @@ def get_hls_and_keras_model(model_path, trace):
     dedicated_opt = {
         'eliminate_softmax': EliminateSoftmax,
         'eliminate_linear_v2': EliminateLinearActivation,
-        'resize_type_matching': ResizeTypeMatching,
         'clone_output': CloneOutput,
         'conv_type_matching': ConvTypeMatching,
+        'resize_type_matching': ResizeTypeMatching,
         'max_pooling_type_matching': MP2DTypeMatching,
         'clone_type_matching': CloneTypeMatching,
         'zero_padding_type_matching': ZP2DTypeMatching,
@@ -39,42 +39,37 @@ def get_hls_and_keras_model(model_path, trace):
 
     keras_model = qkeras.utils.load_qmodel(model_path, compile=False)
     config_def = config_from_keras_model(keras_model, granularity='name',
-                                         default_precision='ap_fixed<16,6>',
-                                         default_reuse_factor=10)
+                                         default_precision=default_precision,
+                                         default_reuse_factor=default_reuse_factor)
 
     config_def['LayerName']['input_1']['Precision'] = {
         'result': 'ap_ufixed<8,0>'
     }
+    config_def['Model']['FIFO_opt'] = True
+    config_def['Model']['Strategy'] = 'Resource'
 
+    hls_model, config = get_hls_model(keras_model, config_def, clock_period, output_dir, trace)
+
+    return hls_model, keras_model, config
+
+
+def get_hls_model(keras_model, config, clock_period, output_dir, trace):
     hls_model = convert_from_keras_model(keras_model,
-                                         output_dir='hls_f8_clk7_rf10_q8_ap_fixed_16-6__FIFO_OPT_eval',
+                                         output_dir=output_dir,
                                          backend='VivadoAccelerator', io_type='io_stream',
-                                         board='zcu102', clock_period=7, hls_config=config_def)
+                                         board='zcu102', clock_period=clock_period, hls_config=config)
     if trace:
         for layer in list(hls_model.get_layers()):
             if layer.__class__.__name__ in ['ApplyAlpha', 'Clone']:
                 continue
             try:
-                config_def['LayerName'][layer.name]['Trace'] = True
+                config['LayerName'][layer.name]['Trace'] = True
             except KeyError:
-                config_def['LayerName'][layer.name] = {'Trace': True}
+                config['LayerName'][layer.name] = {'Trace': True}
 
         hls_model = convert_from_keras_model(keras_model,
-                                             output_dir='hls_f8_clk7_rf10_q8_ap_fixed_16-6__FIFO_OPT',
+                                             output_dir=output_dir,
                                              backend='VivadoAccelerator', io_type='io_stream',
-                                             board='zcu102', clock_period=7, hls_config=config_def)
+                                             board='zcu102', clock_period=clock_period, hls_config=config)
     hls_model.compile()
-    return hls_model, keras_model
-
-def get_hls_model(keras_model):
-
-
-
-
-
-
-    hls_model = convert_from_keras_model(keras_model,
-                                         output_dir='hls_f8_clk7_rf10_q8_ap_fixed_16-6__FIFO_OPT_eval',
-                                         backend='VivadoAccelerator', io_type='io_stream',
-                                         board='zcu102', clock_period=7, hls_config=config_def)
-    return hls_model
+    return hls_model, config
