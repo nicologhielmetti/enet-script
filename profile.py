@@ -34,7 +34,7 @@ X = np.load(args.input_data)
 model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5'\
         .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
 
-out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan_FIFO_OPT'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
+out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
                                              args.precision).replace(',', '-').replace('<', '_').replace('>', '_')
 
 hls_model, keras_model, config = get_hls_and_keras_models(model_path, args.precision, args.reuse_factor,
