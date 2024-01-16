@@ -6,6 +6,7 @@ dependencies:
   - python=3.9.5
   - pip:
       - git+https://github.com/nicologhielmetti/hls4ml.git@enet#egg=hls4ml[profiling]
+      - torch
       - ipykernel==6.22.0
       - ipython==8.12.0
       - keras==2.7.0
