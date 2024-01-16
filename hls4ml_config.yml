@@ -1,0 +1,498 @@
+AcceleratorConfig:
+  Driver: python
+  Interface: axi_stream
+  Precision:
+    Input: float
+    Output: float
+Backend: VivadoAccelerator
+Board: zcu102
+ClockPeriod: 7
+HLSConfig:
+  LayerName:
+    add:
+      StreamDepth: 2
+    add_1:
+      StreamDepth: 2
+    add_10:
+      StreamDepth: 2
+    add_11:
+      StreamDepth: 2
+    add_12:
+      StreamDepth: 2
+    add_13:
+      StreamDepth: 2
+    add_2:
+      StreamDepth: 2
+    add_3:
+      StreamDepth: 2
+    add_4:
+      StreamDepth: 2
+    add_5:
+      StreamDepth: 2
+    add_6:
+      StreamDepth: 2
+    add_7:
+      StreamDepth: 2
+    add_8:
+      StreamDepth: 2
+    add_9:
+      StreamDepth: 2
+    batch_normalization:
+      StreamDepth: 2
+    batch_normalization_1:
+      StreamDepth: 2
+    batch_normalization_11:
+      StreamDepth: 2
+    batch_normalization_12:
+      StreamDepth: 82
+    batch_normalization_13:
+      StreamDepth: 2
+    batch_normalization_15:
+      StreamDepth: 2
+    batch_normalization_16:
+      StreamDepth: 63
+    batch_normalization_17:
+      StreamDepth: 2
+    batch_normalization_19:
+      StreamDepth: 2
+    batch_normalization_20:
+      StreamDepth: 44
+    batch_normalization_21:
+      StreamDepth: 2
+    batch_normalization_23:
+      StreamDepth: 2
+    batch_normalization_24:
+      StreamDepth: 44
+    batch_normalization_25:
+      StreamDepth: 2
+    batch_normalization_27:
+      StreamDepth: 2
+    batch_normalization_28:
+      StreamDepth: 44
+    batch_normalization_29:
+      StreamDepth: 2
+    batch_normalization_3:
+      StreamDepth: 2
+    batch_normalization_31:
+      StreamDepth: 2
+    batch_normalization_32:
+      StreamDepth: 44
+    batch_normalization_33:
+      StreamDepth: 2
+    batch_normalization_35:
+      StreamDepth: 2
+    batch_normalization_36:
+      StreamDepth: 44
+    batch_normalization_37:
+      StreamDepth: 2
+    batch_normalization_39:
+      StreamDepth: 2
+    batch_normalization_4:
+      StreamDepth: 121
+    batch_normalization_40:
+      StreamDepth: 2
+    batch_normalization_41:
+      StreamDepth: 2
+    batch_normalization_43:
+      StreamDepth: 2
+    batch_normalization_44:
+      StreamDepth: 82
+    batch_normalization_45:
+      StreamDepth: 2
+    batch_normalization_47:
+      StreamDepth: 2
+    batch_normalization_48:
+      StreamDepth: 82
+    batch_normalization_49:
+      StreamDepth: 2
+    batch_normalization_5:
+      StreamDepth: 2
+    batch_normalization_51:
+      StreamDepth: 2
+    batch_normalization_52:
+      StreamDepth: 2
+    batch_normalization_53:
+      StreamDepth: 2
+    batch_normalization_55:
+      StreamDepth: 2
+    batch_normalization_56:
+      StreamDepth: 158
+    batch_normalization_7:
+      StreamDepth: 2
+    batch_normalization_8:
+      StreamDepth: 82
+    batch_normalization_9:
+      StreamDepth: 2
+    concatenate:
+      StreamDepth: 2
+    conv2d_1:
+      ConvImplementation: Encoded
+    conv_initial:
+      StreamDepth: 2
+    conv_initial_alpha:
+      StreamDepth: 2
+    final_block:
+      StreamDepth: 10001
+    final_block_alpha:
+      StreamDepth: 10000
+    in_local:
+      StreamDepth: 2
+    input_1:
+      StreamDepth: 10000
+    main_conv_bottleneck_1_0:
+      StreamDepth: 2
+    main_conv_bottleneck_1_0_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_1_1:
+      StreamDepth: 2
+    main_conv_bottleneck_1_1_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_1_2:
+      StreamDepth: 2
+    main_conv_bottleneck_1_2_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_2_0:
+      StreamDepth: 2
+    main_conv_bottleneck_2_0_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_2_1:
+      StreamDepth: 2
+    main_conv_bottleneck_2_1_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_2_2:
+      StreamDepth: 2
+    main_conv_bottleneck_2_2_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_3_0:
+      StreamDepth: 2
+    main_conv_bottleneck_3_0_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_3_1:
+      StreamDepth: 2
+    main_conv_bottleneck_3_1_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_3_2:
+      StreamDepth: 2
+    main_conv_bottleneck_3_2_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_4_0:
+      StreamDepth: 2
+    main_conv_bottleneck_4_0_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_4_1:
+      StreamDepth: 2
+    main_conv_bottleneck_4_1_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_4_2:
+      StreamDepth: 2
+    main_conv_bottleneck_4_2_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_5_0:
+      StreamDepth: 2
+    main_conv_bottleneck_5_0_alpha:
+      StreamDepth: 2
+    main_conv_bottleneck_5_1:
+      StreamDepth: 2
+    main_conv_bottleneck_5_1_alpha:
+      StreamDepth: 2
+    max_pooling2d:
+      StreamDepth: 2
+    max_pooling2d_1:
+      StreamDepth: 2
+    max_pooling2d_1_cpy1:
+      StreamDepth: 2
+    max_pooling2d_1_cpy2:
+      StreamDepth: 2
+    max_pooling2d_4:
+      StreamDepth: 2
+    max_pooling2d_4_cpy1:
+      StreamDepth: 2
+    max_pooling2d_4_cpy2:
+      StreamDepth: 2
+    max_pooling2d_cpy1:
+      StreamDepth: 2
+    max_pooling2d_cpy2:
+      StreamDepth: 156
+    out_conv_bottleneck_1_0:
+      StreamDepth: 2
+    out_conv_bottleneck_1_1:
+      StreamDepth: 2
+    out_conv_bottleneck_1_2:
+      StreamDepth: 2
+    out_conv_bottleneck_2_0:
+      StreamDepth: 2
+    out_conv_bottleneck_2_1:
+      StreamDepth: 2
+    out_conv_bottleneck_2_2:
+      StreamDepth: 2
+    out_conv_bottleneck_3_0:
+      StreamDepth: 2
+    out_conv_bottleneck_3_1:
+      StreamDepth: 2
+    out_conv_bottleneck_3_2:
+      StreamDepth: 2
+    out_conv_bottleneck_4_0:
+      StreamDepth: 2
+    out_conv_bottleneck_4_1:
+      StreamDepth: 2
+    out_conv_bottleneck_4_2:
+      StreamDepth: 2
+    out_conv_bottleneck_5_0:
+      StreamDepth: 2
+    out_conv_bottleneck_5_1:
+      StreamDepth: 2
+    out_local:
+      StreamDepth: 10001
+    proj_conv_bottleneck_1_0:
+      StreamDepth: 2
+    proj_conv_bottleneck_1_0_alpha:
+      StreamDepth: 2
+    proj_conv_bottleneck_1_1:
+      StreamDepth: 2
+    proj_conv_bottleneck_1_2:
+      StreamDepth: 2
+    proj_conv_bottleneck_2_0:
+      StreamDepth: 2
+    proj_conv_bottleneck_2_0_alpha:
+      StreamDepth: 2
+    proj_conv_bottleneck_2_1:
+      StreamDepth: 2
+    proj_conv_bottleneck_2_2:
+      StreamDepth: 2
+    proj_conv_bottleneck_3_0:
+      StreamDepth: 2
+    proj_conv_bottleneck_3_1:
+      StreamDepth: 2
+    proj_conv_bottleneck_3_2:
+      StreamDepth: 2
+    proj_conv_bottleneck_4_0:
+      StreamDepth: 2
+    proj_conv_bottleneck_4_1:
+      StreamDepth: 2
+    proj_conv_bottleneck_4_2:
+      StreamDepth: 2
+    proj_conv_bottleneck_5_0:
+      StreamDepth: 2
+    proj_conv_bottleneck_5_1:
+      StreamDepth: 2
+    re_lu:
+      StreamDepth: 2
+    re_lu_1:
+      StreamDepth: 3
+    re_lu_10:
+      StreamDepth: 3
+    re_lu_11:
+      StreamDepth: 2
+    re_lu_12:
+      StreamDepth: 2
+    re_lu_12_cpy1:
+      StreamDepth: 2
+    re_lu_12_cpy2:
+      StreamDepth: 2
+    re_lu_13:
+      StreamDepth: 2
+    re_lu_14:
+      StreamDepth: 2
+    re_lu_15:
+      StreamDepth: 2
+    re_lu_15_cpy1:
+      StreamDepth: 2
+    re_lu_15_cpy2:
+      StreamDepth: 2
+    re_lu_16:
+      StreamDepth: 2
+    re_lu_17:
+      StreamDepth: 2
+    re_lu_18:
+      StreamDepth: 2
+    re_lu_18_cpy1:
+      StreamDepth: 2
+    re_lu_18_cpy2:
+      StreamDepth: 2
+    re_lu_19:
+      StreamDepth: 2
+    re_lu_2:
+      StreamDepth: 2
+    re_lu_20:
+      StreamDepth: 2
+    re_lu_21:
+      StreamDepth: 2
+    re_lu_21_cpy1:
+      StreamDepth: 2
+    re_lu_21_cpy2:
+      StreamDepth: 2
+    re_lu_22:
+      StreamDepth: 2
+    re_lu_23:
+      StreamDepth: 2
+    re_lu_24:
+      StreamDepth: 2
+    re_lu_24_cpy1:
+      StreamDepth: 2
+    re_lu_24_cpy2:
+      StreamDepth: 2
+    re_lu_25:
+      StreamDepth: 2
+    re_lu_26:
+      StreamDepth: 2
+    re_lu_27:
+      StreamDepth: 2
+    re_lu_27_cpy1:
+      StreamDepth: 2
+    re_lu_27_cpy2:
+      StreamDepth: 2
+    re_lu_28:
+      StreamDepth: 2
+    re_lu_29:
+      StreamDepth: 2
+    re_lu_3:
+      StreamDepth: 2
+    re_lu_30:
+      StreamDepth: 2
+    re_lu_30_cpy1:
+      StreamDepth: 2
+    re_lu_30_cpy2:
+      StreamDepth: 2
+    re_lu_31:
+      StreamDepth: 2
+    re_lu_32:
+      StreamDepth: 2
+    re_lu_33:
+      StreamDepth: 2
+    re_lu_33_cpy1:
+      StreamDepth: 2
+    re_lu_33_cpy2:
+      StreamDepth: 2
+    re_lu_34:
+      StreamDepth: 2
+    re_lu_35:
+      StreamDepth: 2
+    re_lu_36:
+      StreamDepth: 2
+    re_lu_36_cpy1:
+      StreamDepth: 2
+    re_lu_36_cpy2:
+      StreamDepth: 2
+    re_lu_37:
+      StreamDepth: 2
+    re_lu_38:
+      StreamDepth: 2
+    re_lu_39:
+      StreamDepth: 2
+    re_lu_39_cpy1:
+      StreamDepth: 2
+    re_lu_39_cpy2:
+      StreamDepth: 2
+    re_lu_3_cpy1:
+      StreamDepth: 2
+    re_lu_3_cpy2:
+      StreamDepth: 2
+    re_lu_4:
+      StreamDepth: 2
+    re_lu_40:
+      StreamDepth: 2
+    re_lu_41:
+      StreamDepth: 2
+    re_lu_42:
+      StreamDepth: 9077
+    re_lu_5:
+      StreamDepth: 2
+    re_lu_6:
+      StreamDepth: 2
+    re_lu_6_cpy1:
+      StreamDepth: 2
+    re_lu_6_cpy2:
+      StreamDepth: 2
+    re_lu_7:
+      StreamDepth: 2
+    re_lu_8:
+      StreamDepth: 2
+    re_lu_9:
+      StreamDepth: 2
+    skip_conv_bottleneck_1_0:
+      StreamDepth: 2
+    skip_conv_bottleneck_1_1:
+      StreamDepth: 2
+    skip_conv_bottleneck_1_2:
+      StreamDepth: 2
+    skip_conv_bottleneck_2_0:
+      StreamDepth: 2
+    skip_conv_bottleneck_2_1:
+      StreamDepth: 2
+    skip_conv_bottleneck_2_2:
+      StreamDepth: 2
+    skip_conv_bottleneck_3_0:
+      StreamDepth: 2
+    skip_conv_bottleneck_3_1:
+      StreamDepth: 2
+    skip_conv_bottleneck_3_2:
+      StreamDepth: 2
+    skip_conv_bottleneck_4_0:
+      StreamDepth: 2
+    skip_conv_bottleneck_4_1:
+      StreamDepth: 2
+    skip_conv_bottleneck_4_2:
+      StreamDepth: 2
+    skip_conv_bottleneck_5_0:
+      StreamDepth: 2
+    skip_conv_bottleneck_5_1:
+      StreamDepth: 2
+    up_sampling2d:
+      StreamDepth: 2
+    up_sampling2d_1:
+      StreamDepth: 871
+    up_sampling2d_2:
+      StreamDepth: 2
+    up_sampling2d_3:
+      StreamDepth: 4877
+    up_sampling2d_4:
+      StreamDepth: 10001
+    zero_padding2d:
+      StreamDepth: 130
+    zero_padding2d_1:
+      StreamDepth: 20
+    zero_padding2d_10:
+      StreamDepth: 38
+    zero_padding2d_12:
+      StreamDepth: 38
+    zero_padding2d_14:
+      StreamDepth: 38
+    zero_padding2d_16:
+      StreamDepth: 38
+    zero_padding2d_18:
+      StreamDepth: 38
+    zero_padding2d_2:
+      StreamDepth: 104
+    zero_padding2d_20:
+      StreamDepth: 902
+    zero_padding2d_22:
+      StreamDepth: 71
+    zero_padding2d_24:
+      StreamDepth: 71
+    zero_padding2d_26:
+      StreamDepth: 4982
+    zero_padding2d_28:
+      StreamDepth: 139
+    zero_padding2d_29:
+      StreamDepth: 10001
+    zero_padding2d_4:
+      StreamDepth: 71
+    zero_padding2d_6:
+      StreamDepth: 71
+    zero_padding2d_7:
+      StreamDepth: 11
+    zero_padding2d_8:
+      StreamDepth: 55
+  Model:
+    FIFO_opt: 0
+    Precision: ap_fixed<8,4>
+    ReuseFactor: 6
+    Strategy: Resource
+IOType: io_stream
+# InputData: X_test.npy
+KerasH5: '/eos/home-n/nghielme/enet-results-run2/results_hls_f8_clk7_rf6_q4_ap_fixed_8-4_/hls_f8_clk7_rf6_q4_ap_fixed_8-4__FIFO_OPT/keras_model.h5'
+OutputDir: hls_f8_clk7_rf6_q4_ap_fixed_8-4__FIFO_OPT
+# OutputPredictions: y_test.npy
+ProjectName: myproject
+Stamp: 88CB4a2A
+XilinxPart: xczu9eg-ffvb1156-2-e
