@@ -2,7 +2,7 @@ from qkeras.utils import load_qmodel
 import os
 import numpy as np
 
-X = np.load('X_test.npy')
+X = np.load('./data_pickles/X_test.npy')
 for model in os.listdir('models_h5_run2'):
     if model.endswith('.h5'):
         keras_model = load_qmodel('models_h5_run2/' + model, compile=False)
