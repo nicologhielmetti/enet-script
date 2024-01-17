@@ -1,3 +1,5 @@
+# Example hls4ml configuration file
+
 AcceleratorConfig:
   Driver: python
   Interface: axi_stream
@@ -490,7 +492,7 @@ HLSConfig:
     Strategy: Resource
 IOType: io_stream
 # InputData: X_test.npy
-KerasH5: '/eos/home-n/nghielme/enet-results-run2/results_hls_f8_clk7_rf6_q4_ap_fixed_8-4_/hls_f8_clk7_rf6_q4_ap_fixed_8-4__FIFO_OPT/keras_model.h5'
+KerasH5: "/eos/home-n/nghielme/enet-results-run2/results_hls_f8_clk7_rf6_q4_ap_fixed_8-4_/hls_f8_clk7_rf6_q4_ap_fixed_8-4__FIFO_OPT/keras_model.h5"
 OutputDir: hls_f8_clk7_rf6_q4_ap_fixed_8-4__FIFO_OPT
 # OutputPredictions: y_test.npy
 ProjectName: myproject
