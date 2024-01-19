@@ -8,5 +8,4 @@ for model in os.listdir('models_h5_run2'):
         keras_model = load_qmodel('models_h5_run2/' + model, compile=False)
         y_keras = keras_model(X)
         np.save('models_h5_run2/y_keras_' + model[:8] + '.npy', y_keras)
-    else:
-        continue
+        
