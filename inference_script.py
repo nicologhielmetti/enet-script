@@ -24,7 +24,7 @@ def produce_hls_and_keras_model_outputs(model_inputs, path_to_keras_model):
     hls_model, keras_model, _ = model_under_test.get_hls_and_keras_models(path_to_keras_model, "ap_fixed<8,4>", 8, 7, "hls4ml_example_output0", False)
 
     # hls_model.compile()
-    return hls_model.predict(model_inputs), keras_,model(model_inputs)
+    return hls_model.predict(model_inputs), keras_model(model_inputs)
 
 
 # def produce_keras_model_output(model_inputs, path_to_keras_model, keras_model_name):
@@ -60,7 +60,7 @@ def plot_segmented_image(model_ouputs, image_to_plot):
 # %%
 ## Keras Model Inference
 
-y_hls, y_keras = produce_hls_and_keras_model_outputs(X, "models_h5_run2", "hom4_32_16_16_16_16_16.h5")
+y_hls, y_keras = produce_hls_and_keras_model_outputs(X, "models_h5_run2/hom4_32_16_16_16_16_16.h5")
 
 # %%
 # plot_segmented_image(np.array(y_keras), 2)
