@@ -34,7 +34,7 @@ X = np.load(args.input_data)
 model_path = 'models_h5_autoq_trained/autoq_q4_q8_2022_04_12.h5'\
         # .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
 
-out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_autoq_q4_q8_profile'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
+out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan_FIFO_OPT'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
                                              args.precision).replace(',', '-').replace('<', '_').replace('>', '_')
 
 hls_model, keras_model, config = get_hls_and_keras_models(model_path, args.precision, args.reuse_factor,
