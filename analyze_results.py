@@ -79,9 +79,17 @@ df['Latency Overclock [ms]'] = df['MaxLatency'] * (10 - df['WNS']) * 1e-6
 ap_fixed_16_6_data = df[df['Precision'] == '16,6']
 ap_fixed_8_4_data = df[df['Precision'] == '8,4']
 
-ap_fixed_8_4_data = ap_fixed_8_4_data.sort_values(by=['Clock', 'ReuseFactor'], ascending=True)
-ap_fixed_16_6_data = ap_fixed_16_6_data.sort_values(by=['Clock', 'ReuseFactor'], ascending=True)
+enet8q8 = df[df['Quantization'] == 8]
+enet8q8 = enet8q8[enet8q8['Filters'] == 8]
 
+enet8q4 = df[df['Quantization'] == 4]
+enet8q4 = enet8q4[enet8q4['Filters'] == 8]
+enet8q4 = enet8q4.sort_values(by=['Clock', 'ReuseFactor'], ascending=True)
+
+enet8q4_8 = pd.concat([enet8q4, enet8q8])
+
+# ap_fixed_8_4_data = ap_fixed_8_4_data.sort_values(by=['Clock', 'ReuseFactor'], ascending=True)
+# ap_fixed_16_6_data = ap_fixed_16_6_data.sort_values(by=['Clock', 'ReuseFactor'], ascending=True)
 
 def print_plot(data, title):
     def pointplot_with_outliers(*args, **kwargs):
@@ -107,14 +115,14 @@ def print_plot(data, title):
 
     sns.set_theme()
 
-    g = sns.FacetGrid(data, col='Filters', row='Quantization', sharex=False, sharey=False, aspect=3.2,
+    g = sns.FacetGrid(data, col='Filters', row='Quantization', sharex=False, sharey=False, aspect=6, #3.2
                       ylim=(0, 110))
     g.map_dataframe(pointplot_with_outliers, join=False, x='Model', y='value', hue='variable', palette='tab10')
     g.add_legend()
-    g.set_xticklabels(rotation=45)
+    g.set_xticklabels(rotation=70)
     g.fig.suptitle(title)
     plt.show()
 
-
-print_plot(ap_fixed_8_4_data, 'Default Quantization: ap_fixed<8,4>')
-print_plot(ap_fixed_16_6_data, 'Default Quantization: ap_fixed<16,6>')
+print_plot(enet8q4_8, 'ENet w/ quantization 4 bits with 8 or 4 filters')
+# print_plot(ap_fixed_8_4_data, 'Default Quantization: ap_fixed<8,4>')
+# print_plot(ap_fixed_16_6_data, 'Default Quantization: ap_fixed<16,6>')

@@ -14,10 +14,14 @@ class ConvTypeMatching(OptimizerPass):
         in_name = 'clone_' + re.sub(r'_cpy\d+', '', node.inputs[0]) if 'cpy' in node.inputs[0] else None
         input_bits = node.get_input_node(input_name=in_name).get_output_variable().type.precision.width
         input_integers = node.get_input_node(input_name=in_name).get_output_variable().type.precision.integer
-        weight_bits = node.get_attr('weight_quantizer').bits
-        weight_integers = node.get_attr('weight_quantizer').hls_type.integer
-        bias_bits = node.get_attr('weight_quantizer').bits
-        bias_integers = node.get_attr('weight_quantizer').hls_type.integer
+        weight_bits = node.attributes['weight_quantizer'].bits
+        weight_integers = node.attributes['weight_quantizer'].hls_type.integer
+        if node.get_attr('bias_quantizer') == None:
+            bias_bits = 0
+            bias_integers = 0
+        else:
+            bias_bits = node.get_attr('bias_quantizer').bits
+            bias_integers = node.get_attr('bias_quantizer').hls_type.integer
         n_ops = node.get_attr('n_chan') * node.get_attr('filt_height') * node.get_attr('filt_width')
         new_type = FixedPrecisionType(width=int(max(
                                                         np.ceil(input_bits + weight_bits + np.log2(n_ops)),

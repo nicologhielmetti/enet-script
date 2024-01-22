@@ -1,4 +1,4 @@
- ,ID,Run,Filters,Clock,ReuseFactor,Model,Quantization,Precision,LUTs%,FFs%,RAM36Bs%,RAM18s%,DSPs%,WNS,MaxLatency
+,ID,Run,Filters,Clock,ReuseFactor,Model,Quantization,Precision,LUTs%,FFs%,RAM36Bs%,RAM18s%,DSPs%,WNS,MaxLatency
 9,hls_f8_clk10_rf2_q4_ap_fixed_8-4_,run2,8,10,2,"Clock: 10 
  RF: 2",4,"8,4",NA,NA,NA,NA,NA,NA,1751049
 16,hls_f16_clk10_rf100_q4_ap_fixed_16-6_,run1,16,10,100,"Clock: 10 

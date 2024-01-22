@@ -19,22 +19,22 @@ parser.add_argument('-i', '--input_data', type=str, help='Input .npy file', narg
 parser.add_argument('-o', '--output_predictions', type=str, help='Output .npy file', nargs='?', default=None)
 args = parser.parse_args()
 
-block = 38
+block = 0
 print_plots = True
 print_numerical = False
 print_numerical_x = False
 print_precision = True
 create_y_model = False
 
-ymodel_path = 'session_savings/y_model2_hom{}_32_{}_{}_{}_{}_{}.npy'\
-    .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
+ymodel_path = 'session_savings/y_model_autoq_q4_q8.npy'\
+#     .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
 
 X = np.load(args.input_data)
 
-model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5'\
-        .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
+model_path = 'models_h5_autoq_trained/autoq_q4_q8_2022_04_12.h5'\
+        # .format(args.quantization, args.n_filters, args.n_filters, args.n_filters, args.n_filters, args.n_filters)
 
-out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan_FIFO_OPT'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
+out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_autoq_q4_q8_profile'.format(args.n_filters, args.clock_period, args.reuse_factor, args.quantization,
                                              args.precision).replace(',', '-').replace('<', '_').replace('>', '_')
 
 hls_model, keras_model, config = get_hls_and_keras_models(model_path, args.precision, args.reuse_factor,
@@ -68,7 +68,7 @@ act_blocks_ysim = []
 single_block_ysim = {}
 for k, v in ysim.items():
     single_block_ysim[k] = v
-    if 're_lu' in k:
+    if 'relu' in k or 're_lu' in k:
         act_blocks_ysim.append(single_block_ysim)
         single_block_ysim = {}
 else:

@@ -115,9 +115,9 @@ def get_dummy_model_and_build_hls(n_filters, clock_period, reuse_factor, quantiz
 def get_model_and_build_hls(n_filters, clock_period, reuse_factor, quantization, precision='ap_fixed<8,4>',
                             input_data=None,
                             output_predictions=None):
-    model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5'\
-        .format(quantization, n_filters, n_filters, n_filters, n_filters, n_filters)
-    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan'.format(n_filters, clock_period, reuse_factor, quantization,
+    model_path = 'models_h5_autoq_trained/autoq_q4_q8_pn4.h5'\
+        # .format(quantization, n_filters, n_filters, n_filters, n_filters, n_filters)
+    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_last_iteration_full_pn4'.format(n_filters, clock_period, reuse_factor, quantization,
                                                              precision).replace(',', '-').replace('<', '_').replace('>', '_')
     hls_model, keras_model, config = get_hls_and_keras_models(model_path, precision, reuse_factor, clock_period,
                                                               out_dir, False)

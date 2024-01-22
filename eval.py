@@ -7,10 +7,11 @@ import json
 import qkeras
 # import hls4ml
 
-from cityscapes import create_cityscapes_ds, N_CLASSES, WIDTH, HEIGHT
+from enetdataset import create_cityscapes_ds, N_CLASSES, HEIGHT, WIDTH
 from model_under_test import get_hls_and_keras_models
 
 CHANNEL_AXIS = -1  # 1
+BATCH = 32
 
 
 class Evaluator:
@@ -33,7 +34,7 @@ class Evaluator:
 
 def eval_keras_model(model_path):
     model = tf.keras.models.load_model(model_path, compile=False)
-    data = create_cityscapes_ds("validation", 1)
+    data = create_cityscapes_ds("validation", 1, 10)
 
     evaluator = Evaluator(N_CLASSES)
 
@@ -47,7 +48,7 @@ def eval_keras_model(model_path):
 def eval_qkeras_model(model_path):
     model = qkeras.utils.load_qmodel(model_path, compile=False)
     qkeras.utils.model_save_quantized_weights(model)
-    data = create_cityscapes_ds("validation", 1)
+    data = create_cityscapes_ds("validation", 1, 10)
 
     evaluator = Evaluator(N_CLASSES)
     pbar = tqdm(data)
@@ -60,7 +61,7 @@ def eval_qkeras_model(model_path):
 
 
 def eval_model(model):
-    data = create_cityscapes_ds("validation", 1)
+    data = create_cityscapes_ds("validation", 1, 10)
 
     evaluator = Evaluator(N_CLASSES)
 
@@ -82,7 +83,7 @@ def eval_hls4ml_model(quantization, n_filters, default_precision, default_reuse_
         .replace('<', '_').replace('>', '_')
     hls_model, _, _ = get_hls_and_keras_models(model_path, default_precision, default_reuse_factor, clock_period,
                                                out_dir, False)
-    data = create_cityscapes_ds("validation", 1)
+    data = create_cityscapes_ds("validation", 1, 10)
 
     evaluator = Evaluator(N_CLASSES)
 
@@ -104,8 +105,9 @@ def eval_hls4ml_vs_qkeras(quantization, n_filters, default_precision, default_re
             X_test = []
         pbar = tqdm(data)
         for image, label in pbar:
-            prediction = model.predict(image.numpy()).reshape(1, HEIGHT, WIDTH, N_CLASSES)
+            prediction = model.predict(image.numpy())
             if model.__class__.__name__ == "HLSModel":
+                prediction = prediction.reshape(1, HEIGHT, WIDTH, N_CLASSES)
                 y_hls.append(prediction)
                 y_test.append(label.numpy())
                 X_test.append(image.numpy())
@@ -119,17 +121,16 @@ def eval_hls4ml_vs_qkeras(quantization, n_filters, default_precision, default_re
 
         return evaluator.result()
 
-    model_path = 'models_h5_run2/hom{}_32_{}_{}_{}_{}_{}.h5' \
-        .format(quantization, n_filters, n_filters, n_filters, n_filters, n_filters)
-    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_test_14_jan_FIFO_OPT'.format(n_filters, clock_period, default_reuse_factor,
+    model_path = 'models_h5_autoq_trained/autoq_q4_q8_pn4.h5'
+    out_dir = 'hls_f{}_clk{}_rf{}_q{}_{}_EVAL_autoq_q4_q8_pn4'.format(n_filters, clock_period, default_reuse_factor,
                                                          quantization,
                                                          default_precision).replace(',', '-') \
         .replace('<', '_').replace('>', '_')
     hls_model, qkeras_model, _ = get_hls_and_keras_models(model_path, default_precision, default_reuse_factor,
                                                           clock_period, out_dir, False)
-    data = create_cityscapes_ds("validation", 1)
-    hls_result = evaluate(hls_model, data)
+    data = create_cityscapes_ds("validation", 1, 1000)
     qkeras_result = evaluate(qkeras_model, data)
+    hls_result = evaluate(hls_model, data)
     results = {'hls4ml': hls_result, 'qkeras': qkeras_result}
     return results
 
