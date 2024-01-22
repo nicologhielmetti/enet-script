@@ -14,3 +14,4 @@ dependencies:
       - seaborn==0.13.1
       - tensorflow==2.7.1
       - tensorflow-datasets==4.9.3
+      - opencv-python==4.9.0.80
