@@ -49,9 +49,9 @@ if create_y_model:
         if 're_lu' in k:
             act_blocks_ymodel.append(single_block_ymodel)
             single_block_ymodel = {}
-    else:
-        act_blocks_ymodel.append(single_block_ymodel)
-        single_block_ymodel = {}
+        else:
+            act_blocks_ymodel.append(single_block_ymodel)
+            single_block_ymodel = {}
     np.save(ymodel_path, act_blocks_ymodel)
 
 act_blocks_ymodel = np.load(ymodel_path, allow_pickle=True).tolist()
@@ -71,9 +71,9 @@ for k, v in ysim.items():
     if 'relu' in k or 're_lu' in k:
         act_blocks_ysim.append(single_block_ysim)
         single_block_ysim = {}
-else:
-    act_blocks_ymodel.append(single_block_ysim)
-    single_block_ysim = {}
+    else:
+        act_blocks_ymodel.append(single_block_ysim)
+        single_block_ysim = {}
 
 df = pd.DataFrame()
 start = 0 if block == 0 else sum([len(e) for e in act_blocks_ysim[:block]])
